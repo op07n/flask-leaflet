@@ -117,9 +117,33 @@ def dump_json(faults_dict, output_json, faults_selected=None):
 
 
 faults = load_nhm('/home/melody/flask-leaflet/sim_atlas/static/data/NZ_FLTmodel_2010_original.txt')
-dump_json(faults, '/home/melody/flask-leaflet/sim_atlas/static/data/fault_traces2.json')
-dump_json(faults, '/home/melody/flask-leaflet/sim_atlas/static/data/fault_traces3.json', ["AlpineF2K","Albury",'Kelly','Hollyford','BooBooEAST'])
+# dump_json(faults, '/home/melody/flask-leaflet/sim_atlas/static/data/fault_traces2.json')
+# dump_json(faults, '/home/melody/flask-leaflet/sim_atlas/static/data/fault_traces3.json', ["AlpineF2K","Albury",'Kelly','Hollyford','BooBooEAST'])
 
 
+# with open('traces.sql', 'w') as f:
+#     count = 0
+#     for fault in faults.keys():
+#         traces = faults[fault].trace.tolist()
+#         for i in range(len(traces)):
+#             long, lat = traces[i]
+#             f.write("(" + str(count)+ ",'"+fault+"',"+str(lat)+","+str(long)+"),")
+#             count +=1
+
+# with open('video.sql', 'w') as f:
+#     for fault in faults.keys():
+#         f.write("('"+fault+"',"+"'https://www.youtube.com/watch?v=qZkOTI4x_cc'"+"),")
+#
 
 
+class Fault(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), unique=True)
+    traces = db.Column(db.ARRAY(db.Integer, dimensions=2))
+    video = db.Column(db.String)
+
+    def __init__(self, id, name, traces, video):
+        self.id = id
+        self.name = name
+        self.traces = traces
+        self.video = video
