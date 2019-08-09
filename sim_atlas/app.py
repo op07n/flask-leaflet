@@ -1,11 +1,11 @@
 import json
 import sys
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://flask_admin:flask_admin@localhost/sim_atlas2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://flask_admin:flask_admin@localhost/sim_atlas'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -15,7 +15,7 @@ class Fault(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     video = db.Column(db.VARCHAR(255), nullable=True)
-    fault_traces = db.relationship('FaultTrace', backref='faults', lazy=True)
+    fault_traces = db.relationship('FaultTrace', back_populates='fault', lazy=True)
 
     def __init__(self, name, video=None):
         self.name = name
@@ -24,10 +24,10 @@ class Fault(db.Model):
 
 class FaultTrace(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    trace_lat = db.Column(db.NUMERIC)
-    trace_lon = db.Column(db.NUMERIC)
+    trace_lat = db.Column(db.Float)
+    trace_lon = db.Column(db.Float)
     fault_id = db.Column(db.Integer, db.ForeignKey('fault.id'))
-    fault = db.relationship('Fault')
+    fault = db.relationship('Fault', back_populates='fault_traces')
 
     def __init__(self, fault, trace_lat, trace_lon):
         self.fault = fault
@@ -49,7 +49,15 @@ def make_data(db, json_file):
 
 @app.route("/api")
 def get_faults():
-    return render_template('index.html')
+    faults = Fault.query.all()
+    fault_traces = []
+    for f in faults:
+        fault_dict = {}
+        fault_dict['name'] = f.name
+        fault_dict['video'] = f.video
+        fault_dict['traces'] = [(t.trace_lat, t.trace_lon) for t in f.fault_traces]
+        fault_traces.append(fault_dict)
+    return render_template('api.html', fault_traces=fault_traces)
 
 
 if __name__ == '__main__':
