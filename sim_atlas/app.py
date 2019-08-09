@@ -1,6 +1,6 @@
 import json
 import sys
-from flask import Flask, render_template, request,jsonify
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -47,7 +47,7 @@ def make_data(db, json_file):
     db.session.commit()
 
 
-@app.route("/api")
+@app.route("/")
 def get_faults():
     faults = Fault.query.all()
     fault_traces = []
@@ -57,7 +57,7 @@ def get_faults():
         fault_dict['video'] = f.video
         fault_dict['traces'] = [(t.trace_lat, t.trace_lon) for t in f.fault_traces]
         fault_traces.append(fault_dict)
-    return render_template('api.html', fault_traces=fault_traces)
+    return render_template('index.html', fault_traces=fault_traces)
 
 
 if __name__ == '__main__':

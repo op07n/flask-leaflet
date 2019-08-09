@@ -110,6 +110,7 @@ def dump_json(faults_dict, output_json, faults_selected=None):
             traces[i] = [lat, long]
         fd['traces'] = traces
         fd['video'] = 'https://www.youtube.com/watch?v=qZkOTI4x_cc'
+        fd['slip_rate'] = faults_dict[f].slip_rate
         fd_list.append(fd)
 
     with open(output_json, 'w') as ff:
@@ -136,14 +137,3 @@ faults = load_nhm('/home/melody/flask-leaflet/sim_atlas/static/data/NZ_FLTmodel_
 #
 
 
-class Fault(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), unique=True)
-    traces = db.Column(db.ARRAY(db.Integer, dimensions=2))
-    video = db.Column(db.String)
-
-    def __init__(self, id, name, traces, video):
-        self.id = id
-        self.name = name
-        self.traces = traces
-        self.video = video

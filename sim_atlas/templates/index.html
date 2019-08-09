@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>JQuery Hello World Example</title>
+{% extends "base.html" %}
+{% block head %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin=""/>
@@ -16,10 +13,77 @@
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin=""></script>
 
-</head>
-<body>
-<div id="mapid"></div>
+{% endblock %}
 
-<script type="text/javascript" src="../static/js/app.js"></script>
-</body>
-</html>
+{% block content %}
+
+
+<div class="row">
+    <div class="col-xs-6" id="div1">
+        <div id="mapid"></div>
+    </div>
+    <div class="col-xs-6" id="div2">
+        <div id="info"></div>
+    </div>
+</div>
+
+
+
+
+{% block javascript %}
+<script>
+    var map = L.map('mapid').setView([-41.2728, 173.2995], 5.5);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiLXZpa3Rvci0iLCJhIjoiY2pzam9mNXVoMm9xdzQ0b2FmNnNqODE4NCJ9.AnNONHzKRb5vdl2Ikw2l2Q'
+    }).addTo(map);
+    var map_faults = L.layerGroup();
+        map_faults.clearLayers();
+    var json = {{ fault_traces|tojson }};
+
+        var popup = L.popup();
+        for (var i = 0; i < json.length; i++) {
+            (function () {
+                var d = json[i];
+                console.log(d);
+
+                map_faults.addLayer(L.polyline(d.traces, {
+                        color: "red",
+                        opacity: 0.5,
+                        weight: 2
+                    })
+                        .bindPopup(popup)
+                        .on("mouseover", function (e) {
+                            e.target.setStyle({
+                                color: "blue",
+                                opacity: 1,
+                                weight: 5
+                            });
+                            e.target.getPopup().setLatLng(e.latlng).openOn(map);
+                            e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
+                        })
+                        .on("mouseout", function (e) {
+                            e.target.setStyle({
+                                color: "red",
+                                opacity: 0.5,
+                                weight: 2
+                            });
+//                            e.target.closePopup();
+                        })
+                        .on("click", function (e) {
+                            e.target.getPopup().setLatLng(e.latlng).openOn(map);
+                            e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
+                            document.getElementById('info').innerHTML = "Fault name: " + d.name + '</br>' + "Fault traces: " + d.traces + '</br><a href=' + d.video + '> Simulation Video </a>'
+                        })
+                );
+            })();
+        }
+        map_faults.addTo(map);
+
+</script>
+{% endblock %}
+{% endblock %}
+
+
