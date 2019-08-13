@@ -49,38 +49,69 @@
                 var d = json[i];
                 console.log(d);
 
-                map_faults.addLayer(L.polyline(d.traces, {
-                        color: "red",
+                map_faults.addLayer(L.polygon(d.bounds, {
+                        color: "darkgreen",
                         opacity: 0.5,
-                        weight: 2
+                        weight: 2,
+                        dashArray: "4 1 2 "
                     })
                         .bindPopup(popup)
                         .on("mouseover", function (e) {
                             e.target.setStyle({
-                                color: "blue",
+                                color: "yellow",
                                 opacity: 1,
                                 weight: 5
                             });
                             e.target.getPopup().setLatLng(e.latlng).openOn(map);
-                            e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
+                            e.target.getPopup().setContent(d.name);
+//                            e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
                         })
                         .on("mouseout", function (e) {
                             e.target.setStyle({
-                                color: "red",
+                                color: "darkgreen",
                                 opacity: 0.5,
                                 weight: 2
                             });
-//                            e.target.closePopup();
+                            e.target.closePopup();
                         })
                         .on("click", function (e) {
+                             e.target.setStyle({
+                                color: "yellow",
+                                opacity: 1,
+                                weight: 5
+                            });
+                            e.target.getPopup().setContent(d.name);
                             e.target.getPopup().setLatLng(e.latlng).openOn(map);
-                            e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
-                            document.getElementById('info').innerHTML = "Fault name: " + d.name + '</br>' + "Fault traces: " + d.traces + '</br><a href=' + d.video + '> Simulation Video </a>'
+
+                            document.getElementById('info').innerHTML = "Fault name: " + d.name
+//                            document.getElementById('info').innerHTML = "Fault name: " + d.name + '</br>' + "Fault traces: " + d.traces + '</br><a href=' + d.video + '> Simulation Video </a>'
                         })
                 );
+
+
+
+
+
+                        })
+                for (var j = 0; j < d.bounds.length; j++) {
+                    (function () {
+                        var plane = d.bounds[j];
+                        console.log(plane);
+                        map_faults.addLayer(L.polyline([plane[0], plane[1]], {
+                            color: "darkgreen",
+                            opacity: 0.5,
+                            weight: 5
+                        })
+                        );
+                    })();
+                }
+
+
             })();
+
         }
         map_faults.addTo(map);
+
 
 </script>
 {% endblock %}

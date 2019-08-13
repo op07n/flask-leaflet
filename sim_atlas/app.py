@@ -55,8 +55,11 @@ def get_faults():
         fault_dict = {}
         fault_dict['name'] = f.name
         fault_dict['video'] = f.video
-        fault_dict['traces'] = [(t.trace_lat, t.trace_lon) for t in f.fault_traces]
+        fault_dict['traces'] = [[t.trace_lat, t.trace_lon] for t in f.fault_traces]
         fault_traces.append(fault_dict)
+    with open("/home/melody/flask-leaflet/sim_atlas/static/data/v18p6_rerun_all_faults_bounds.json", 'r') as f:
+        fault_traces = json.load(f)
+    #fault_traces = [{"name": "Albury", "bounds": [[[-44.0338, 170.7133], [-44.198, 170.8078], [-44.2307, 170.71], [-44.0664, 170.6157]]]}, {"name": "HawkeBay4", "bounds":  [[[-39.0785, 177.4993], [-39.1078, 177.4733], [-39.0008, 177.2354], [-38.9716, 177.2615]], [[-39.1086, 177.4727], [-39.1561, 177.4482], [-39.0491, 177.2102], [-39.0016, 177.2349]], [[-39.1568, 177.4476], [-39.1795, 177.4233], [-39.0725, 177.1853], [-39.0499, 177.2096]]]}]
     return render_template('index.html', fault_traces=fault_traces)
 
 
