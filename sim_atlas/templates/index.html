@@ -44,13 +44,11 @@
     var json = {{ fault_traces|tojson }};
     var popup = L.popup();
     var dicts = [];
-//    var image_layer = L.layerGroup();
     for (var i = 0; i < json.length; i++) {
         (function () {
             var d = json[i];
             dicts.push({'name': d.name, 'layer': null});
-            var info = "Fault Name: " + d.name + '</br>' + "Magnitude: " + d.magnitude + '</br>' + "Slip Rate: " + d.slip_rate + ' mm/yr' + '</br>' + "Recurrence Interval: " + d.recurrence_interval + ' yr' + '</br><a href=' + d.video + '> Simulation Video </a>';
-//            console.log(d);
+            var info = "Fault Name: " + d.name + '</br>' + "Magnitude: " + d.magnitude + '</br>' + "Slip Rate: " + d.slip_rate + ' mm/yr' + '</br>' + "Annual Likelyhood: " + (1 / d.recurrence_interval)bb  + '</br><a href=' + d.video + '> Simulation Video </a>';
             var planeLayer = L.polygon(d.planes, {
                     color: "black",
                     opacity: 0.5,
@@ -89,29 +87,21 @@
 
 //                        document.getElementById('info').innerHTML = "Fault name: " + d.name
                         document.getElementById('info').innerHTML = info;
-                        console.log("before");
                          var image_url = "../static/data/v18p6_rerun_srf_plots/".concat(d.name);
                             var imageBounds = L.latLngBounds(d.planes);
-//                            map_faults.removeLayer(image_layer);
                             var image_layer = L.imageOverlay(image_url, imageBounds);
                        for (var k = 0; k < dicts.length; k++){
                            if (dicts[k]['name'] == d.name){
                                if (dicts[k]['layer'] !== null){
-                                   console.log("not null"+ dicts[k]['layer']);
                                     map_faults.removeLayer(dicts[k]['layer']);
                                     dicts[k]['layer'] = null;
-                                    console.log("after", dicts[k]['layer'])
-                                   break
+                                    break
                                }else{
                                    map_faults.addLayer(image_layer);
                                    dicts[k]['layer'] = image_layer;
                                }
-
                            }
-
                        }
-
-
 
                     })
             );
