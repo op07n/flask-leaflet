@@ -1,1 +1,4 @@
 *.idea
+**/*srf_plots*
+**/plot_srf_pngs.py
+**/make_videos.py

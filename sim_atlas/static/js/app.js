@@ -9,11 +9,12 @@ function load_map() {
 }
 
 function load_polylines() {
-    $.getJSON("../static/data/fault_traces.json", function (json) {
+    $.getJSON("../data/fault_info.json", function (json) {
         console.log(json);
         map_faults = L.layerGroup();
         map_faults.clearLayers();
         var popup = L.popup();
+        var image_url = "../data/Mangatete_HYP99-334_S2224_map.png"
         for (var i = 0; i < json.length; i++) {
             (function () {
                 var d = json[i];
@@ -45,6 +46,10 @@ function load_polylines() {
                         .on("click", function (e) {
                             e.target.getPopup().setLatLng(e.latlng).openOn(map);
                             e.target.getPopup().setContent(d.name + '</br><a href=' + d.video + '> Simulation Video </a>');
+                            console.log("before");
+                            var imageBounds = L.latLngBounds(e.latlng.lat, e.latlng.lng);
+                            console.log("adsfds", imageBounds);
+                            map_faults.addLayer(L.imageOverlay(imageUrl, imageBounds));
                         })
                 );
             })();

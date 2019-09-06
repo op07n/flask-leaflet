@@ -10,3 +10,6 @@
 #div2{
     padding-left: 100px
 }
+.sidebar {
+  will-change: auto;
+}

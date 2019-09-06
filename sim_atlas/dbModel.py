@@ -170,12 +170,20 @@ def dump_json(faults_dict, output_json, faults_selected=None):
 #
 # with open("/home/melody/flask-leaflet/sim_atlas/static/data/v18p6_rerun_all_faults_bounds.json", 'w') as ff2:
 #     json.dump(fd,ff2)
-faults = load_nhm('/home/melody/flask-leaflet/sim_atlas/static/data/NZ_FLTmodel_2010_v18p6.txt')
-with open("/home/melody/flask-leaflet/sim_atlas/static/data/v18p6_rerun_all_faults_bounds.json", 'r') as ff:
-    f_dicts = json.load(ff)
-    for fd in f_dicts:
-        fault = faults[fd['name']]
-        fd['video'] = 'https://www.youtube.com/watch?v=qZkOTI4x_cc'
-        fd['slip_rate'] = fault.slip_rate
-        fd['magnitude'] = fault.mw
-        fd['recurrence_interval'] = fault.recur_int_median
+# faults = load_nhm('/home/melody/flask-leaflet/sim_atlas/static/data/NZ_FLTmodel_2010_v18p6.txt')
+# with open("/home/melody/flask-leaflet/sim_atlas/static/data/v18p6_rerun_all_faults_bounds.json", 'r') as ff:
+#     f_dicts = json.load(ff)
+# l = []
+# for fd in f_dicts:
+#     fdd = {}
+#
+#     fault = faults[fd['name']]
+#     fdd['name'] = fd['name']
+#     fdd['planes'] = fd['bounds']
+#     fdd['video'] = 'https://www.youtube.com/watch?v=qZkOTI4x_cc'
+#     fdd['slip_rate'] = fault.slip_rate
+#     fdd['magnitude'] = fault.mw
+#     fdd['recurrence_interval'] = fault.recur_int_median
+#     l.append(fdd)
+# with open("/home/melody/flask-leaflet/sim_atlas/static/data/fault_info.json",'w') as outfile:
+#     json.dump(l, outfile)
